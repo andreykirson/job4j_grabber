@@ -1,0 +1,5 @@
+create table data_model (
+id serial,
+post varchar(500),
+date_post DATE
+)
