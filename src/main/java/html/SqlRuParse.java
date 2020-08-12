@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
@@ -23,14 +23,13 @@ public class SqlRuParse {
                 for (int i = 1; i < table.size(); i++) {
                     String vacancy = table.get(i).getElementsByClass("postslisttopic").text();
                     String date = table.get(i).getElementsByTag("td").get(5).text();
-                    LocalDate dateTime = sqlRuParse.parseDate(date);
-                    System.out.println(vacancy + " " + dateTime);
+                    System.out.println(vacancy + " " + sqlRuParse.parseDate(date));
                 }
         }
     }
 
 
-    private LocalDate parseDate(String date) {
+    private LocalDateTime parseDate(String date) {
 
         String pattern = "d MM yy";
         DateFormat df = new SimpleDateFormat(pattern);
@@ -59,7 +58,7 @@ public class SqlRuParse {
             date = date.replace("вчера", df.format(yesterday));
         }
         DateTimeFormatter strToDate = DateTimeFormatter.ofPattern("d MM yy, HH:mm", Locale.forLanguageTag("ru"));
-        LocalDate rsl = LocalDate.parse(date, strToDate);
+        LocalDateTime rsl = LocalDateTime.parse(date, strToDate);
         return rsl;
     }
 }
