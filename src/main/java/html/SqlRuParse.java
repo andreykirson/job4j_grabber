@@ -1,5 +1,6 @@
 package html;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -11,8 +12,39 @@ import java.util.Locale;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.jsoup.Jsoup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SqlRuParse {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SqlRuParse.class.getName());
+
+    private class Post {
+        String url;
+        String description;
+        String name;
+        LocalDateTime date;
+
+        public Post() {
+        }
+
+        public Post(String name, String url, String description, LocalDateTime date) {
+            this.url = url;
+            this.description = description;
+            this.name = name;
+            this.date = date;
+        }
+
+        @Override
+        public String toString() {
+            return "Post{" +
+                    "url='" + url + '\'' +
+                    ", description='" + description + '\'' +
+                    ", name='" + name + '\'' +
+                    ", date=" + date +
+                    '}';
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         SqlRuParse sqlRuParse = new SqlRuParse();
@@ -20,16 +52,18 @@ public class SqlRuParse {
         for (page = 1; page <= 5; page++) {
             Document doc = Jsoup.connect(String.format("https://www.sql.ru/forum/job-offers/%s", page)).get();
                 Elements table = doc.getElementsByClass("forumTable").get(0).getElementsByTag("tr");
-                for (int i = 1; i < table.size(); i++) {
+                for (int i = 10; i < table.size(); i++) {
                     String vacancy = table.get(i).getElementsByClass("postslisttopic").text();
+                    String link = table.get(i).getElementsByAttribute ("a[href]").text();
                     String date = table.get(i).getElementsByTag("td").get(5).text();
-                    System.out.println(vacancy + " " + sqlRuParse.parseDate(date));
+                    Post post = sqlRuParse.detail(link);
+                    System.out.println(vacancy + " " + parseDate(date) + " " + post.toString());
                 }
         }
     }
 
 
-    private LocalDateTime parseDate(String date) {
+    private static LocalDateTime parseDate(String date) {
 
         String pattern = "d MM yy";
         DateFormat df = new SimpleDateFormat(pattern);
@@ -61,5 +95,25 @@ public class SqlRuParse {
         LocalDateTime rsl = LocalDateTime.parse(date, strToDate);
         return rsl;
     }
+
+    public Post detail(String url) {
+        LOG.debug("Parse resources {}", url);
+        Post post = null;
+        try {
+            Document doc = Jsoup.connect(String.format(url)).get();
+            Elements comments = doc.select(".msgTable");
+            String description = comments.first().select(".msgBody").get(1).html();
+            String name = comments.first().select(".messageHeader").text();
+            String date = comments.last().select(".msgFooter").text();
+            date = date.substring(0, date.indexOf('[') - 1);
+            LOG.debug("Parsing completed");
+            post = new Post(name, url, description, parseDate(date));
+            return post;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return post;
+    }
+
 }
 
