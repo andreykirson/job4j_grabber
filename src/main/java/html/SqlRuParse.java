@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
@@ -52,9 +53,10 @@ public class SqlRuParse {
         for (page = 1; page <= 5; page++) {
             Document doc = Jsoup.connect(String.format("https://www.sql.ru/forum/job-offers/%s", page)).get();
                 Elements table = doc.getElementsByClass("forumTable").get(0).getElementsByTag("tr");
-                for (int i = 10; i < table.size(); i++) {
+                for (int i = 4; i < table.size(); i++) {
                     String vacancy = table.get(i).getElementsByClass("postslisttopic").text();
-                    String link = table.get(i).getElementsByAttribute ("a[href]").text();
+                    Element href = table.get(i).getElementsByClass("postslisttopic").first().child(1);
+                    String link = href.attr("href");
                     String date = table.get(i).getElementsByTag("td").get(5).text();
                     Post post = sqlRuParse.detail(link);
                     System.out.println(vacancy + " " + parseDate(date) + " " + post.toString());
@@ -100,7 +102,7 @@ public class SqlRuParse {
         LOG.debug("Parse resources {}", url);
         Post post = null;
         try {
-            Document doc = Jsoup.connect(String.format(url)).get();
+            Document doc = Jsoup.connect(url).get();
             Elements comments = doc.select(".msgTable");
             String description = comments.first().select(".msgBody").get(1).html();
             String name = comments.first().select(".messageHeader").text();
