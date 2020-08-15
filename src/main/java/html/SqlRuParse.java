@@ -27,7 +27,7 @@ public class SqlRuParse implements Parse {
 
     }
 
-    private static LocalDateTime parseDate(String date) {
+    private static java.sql.Date parseDate(String date) {
 
         String pattern = "d MM yy";
         DateFormat df = new SimpleDateFormat(pattern);
@@ -57,7 +57,8 @@ public class SqlRuParse implements Parse {
         }
         DateTimeFormatter strToDate = DateTimeFormatter.ofPattern("d MM yy, HH:mm", Locale.forLanguageTag("ru"));
         LocalDateTime rsl = LocalDateTime.parse(date, strToDate);
-        return rsl;
+
+        return java.sql.Date.valueOf(String.valueOf(rsl));
     }
 
     @Override
