@@ -71,6 +71,7 @@ public class SqlRuParse implements Parse {
             Elements table = doc.getElementsByClass("forumTable").get(0).getElementsByTag("tr");
             for (int i = 4; i < table.size(); i++) {
                 String vacancy = table.get(i).getElementsByClass("postslisttopic").text();
+                LOG.debug("Parse vacansy: {}", vacancy);
                 Element href = table.get(i).getElementsByClass("postslisttopic").first().child(1);
                 String postLink = href.attr("href");
                 String date = table.get(i).getElementsByTag("td").get(5).text();
