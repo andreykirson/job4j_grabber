@@ -1,5 +1,6 @@
 create table data_model (
 id serial primary key,
-post varchar(500),
-date_post DATE
+name varchar(500),
+date_post DATE,
+description TEXT
 )
