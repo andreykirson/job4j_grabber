@@ -1,7 +1,7 @@
 create table data_model (
 id serial primary key,
 name varchar(500),
-created DATE,
+created timestamp,
 text TEXT,
 link varchar(1000) UNIQUE
 )
