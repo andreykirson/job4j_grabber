@@ -22,10 +22,7 @@ public class SqlRuParse implements Parse {
 
     private static final Logger LOG = LoggerFactory.getLogger(SqlRuParse.class.getName());
     private static final String RESOURCE = "https://www.sql.ru/forum/job-offers";
-
-    public static void main(String[] args) {
-
-    }
+    
 
     private static java.sql.Date parseDate(String date) {
 
