@@ -1,4 +1,4 @@
-create table data_model (
+create table if not exists data_model (
 id serial primary key,
 name varchar(500),
 created timestamp,
