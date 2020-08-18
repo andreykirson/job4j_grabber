@@ -59,7 +59,7 @@ public class Grabber implements Grab {
         public void execute(JobExecutionContext context) throws JobExecutionException {
             JobDataMap map = context.getJobDetail().getJobDataMap();
             Store store = (Store) map.get("store");
-            Parse parse = (Parse) map.get("store");
+            Parse parse = (Parse) map.get("parse");
             try {
                 List<Post> listPost = parse.list(RESOURCE);
                 Iterator<Post> it = listPost.iterator();

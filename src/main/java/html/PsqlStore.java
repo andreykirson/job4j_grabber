@@ -44,7 +44,7 @@ public class PsqlStore implements Store, AutoCloseable {
     }
 
     private void initTable() throws IOException {
-        String sql = String.join("", Files.readAllLines(Path.of("C:\\projects\\job4j_grabber\\src\\main\\java\\db\\DataModel.sql")));
+        String sql = String.join("", Files.readAllLines(Path.of("/projects/job4j_grabber/src/main/java/db/DataModel.sql")));
         try (Statement stm = connection.createStatement()) {
             stm.execute(sql);
         } catch (Exception e) {
