@@ -1,6 +1,7 @@
 package html;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -21,10 +22,9 @@ import org.slf4j.LoggerFactory;
 public class SqlRuParse implements Parse {
 
     private static final Logger LOG = LoggerFactory.getLogger(SqlRuParse.class.getName());
-    private static final String RESOURCE = "https://www.sql.ru/forum/job-offers";
-    
 
-    private static java.sql.Date parseDate(String date) {
+
+    private static Timestamp parseDate(String date) {
 
         String pattern = "d MM yy";
         DateFormat df = new SimpleDateFormat(pattern);
@@ -54,32 +54,35 @@ public class SqlRuParse implements Parse {
         }
         DateTimeFormatter strToDate = DateTimeFormatter.ofPattern("d MM yy, HH:mm", Locale.forLanguageTag("ru"));
         LocalDateTime rsl = LocalDateTime.parse(date, strToDate);
-
-        return java.sql.Date.valueOf(String.valueOf(rsl));
+        Timestamp timestamp = Timestamp.valueOf(rsl);
+        return timestamp;
     }
 
     @Override
-    public List<Post> list(String url) throws IOException {
+    public List<Post> list(String url) {
         List<Post> listPosts = new ArrayList<>();
         SqlRuParse sqlRuParse = new SqlRuParse();
+        String postLink = null;
         LOG.debug("Parse: {}", url);
         int page;
-        for (page = 1; page <= 5; page++) {
-            Document doc = Jsoup.connect(String.format(url, page)).get();
-            Elements table = doc.getElementsByClass("forumTable").get(0).getElementsByTag("tr");
-            for (int i = 4; i < table.size(); i++) {
-                String vacancy = table.get(i).getElementsByClass("postslisttopic").text();
-                LOG.debug("Parse vacansy: {}", vacancy);
-                Element href = table.get(i).getElementsByClass("postslisttopic").first().child(1);
-                String postLink = href.attr("href");
-                String date = table.get(i).getElementsByTag("td").get(5).text();
-                Post post = sqlRuParse.detail(postLink);
-                System.out.println(vacancy + " " + parseDate(date) + " " + post.toString());
-                listPosts.add(post);
+        for (page = 1; page <= 2; page++) {
+            try {
+                Document doc = Jsoup.connect(String.format(url, page)).get();
+                Elements table = doc.getElementsByClass("forumTable").get(0).getElementsByTag("tr");
+                for (int i = 4; i < table.size(); i++) {
+                    String vacancy = table.get(i).getElementsByClass("postslisttopic").text();
+                    LOG.debug("Parse vacansy: {}", vacancy);
+                    Element href = table.get(i).getElementsByTag("a").first();
+                    postLink = href.attr("href");
+                    Post post = sqlRuParse.detail(postLink);
+                    System.out.println(postLink);
+                    listPosts.add(post);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-
-        return listPosts;
+            return listPosts;
     }
 
     public Post detail(String url) {
@@ -88,17 +91,23 @@ public class SqlRuParse implements Parse {
         try {
             Document doc = Jsoup.connect(url).get();
             Elements comments = doc.select(".msgTable");
-            String description = comments.first().select(".msgBody").get(1).html();
+            String description = comments.first().select(".msgBody").get(1).text();
             String name = comments.first().select(".messageHeader").text();
             String date = comments.last().select(".msgFooter").text();
             date = date.substring(0, date.indexOf('[') - 1);
             LOG.debug("Parsing completed");
             post = new Post(name, url, description, parseDate(date));
-            return post;
         } catch (IOException e) {
+
             e.printStackTrace();
         }
         return post;
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        SqlRuParse sqlRuParse = new SqlRuParse();
+        sqlRuParse.list("https://www.sql.ru/forum/job-offers");
     }
 
 }

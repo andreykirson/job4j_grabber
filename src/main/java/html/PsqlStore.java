@@ -26,10 +26,6 @@ public class PsqlStore implements Store, AutoCloseable {
         this.initTable();
     }
 
-    public PsqlStore(Connection connection) {
-        this.connection = connection;
-    }
-
     private void initConnection() {
         try {
             Class.forName(configManager.get("driver-class-name"));
@@ -54,11 +50,11 @@ public class PsqlStore implements Store, AutoCloseable {
 
 
         @Override
-        public void save(Post post) throws IOException {
+        public void save(Post post) {
             LOG.debug("Save Post name: {}, created_date: {}", post.getName(), post.getDate());
             try (PreparedStatement ps = connection.prepareStatement(INSERT_REQUEST)) {
                 ps.setString(1, post.getName());
-                ps.setDate(2, post.getDate());
+                ps.setTimestamp(2, post.getDate());
                 ps.setString(3, post.getDescription());
                 ps.setString(4, post.getUrl());
                 ps.execute();
@@ -81,7 +77,7 @@ public class PsqlStore implements Store, AutoCloseable {
                                 rs.getString("name"),
                                 rs.getString("link"),
                                 rs.getString("text"),
-                                rs.getDate("created")
+                                rs.getTimestamp("created")
                         ));
                     }
                 }
@@ -105,7 +101,7 @@ public class PsqlStore implements Store, AutoCloseable {
                                 rs.getString("name"),
                                 rs.getString("link"),
                                 rs.getString("text"),
-                                rs.getDate("created")
+                                rs.getTimestamp("created")
                         );
                         p.setId(rs.getString("id"));
                         result = p;

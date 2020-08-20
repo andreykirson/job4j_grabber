@@ -1,16 +1,16 @@
 package html;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 public class Post {
     private String url;
     private String description;
     private String name;
-    private Date date;
+    private Timestamp date;
     private String id;
 
-        public Post(String name, String url, String description, java.sql.Date date) {
+        public Post(String name, String url, String description, Timestamp date) {
             this.url = url;
             this.description = description;
             this.name = name;
@@ -21,7 +21,7 @@ public class Post {
         return name;
     }
 
-    public Date getDate() {
+    public Timestamp getDate() {
         return date;
     }
 

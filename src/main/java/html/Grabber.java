@@ -30,7 +30,7 @@ public class Grabber implements Grab {
         return new PsqlStore(cfg);
     }
 
-    public void cfg() throws IOException {
+    public void cfg() {
         cfg = new ConfigManager("grabber.properties");
     }
 
