@@ -13,12 +13,16 @@ public class PsqlStore implements Store, AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(PsqlStore.class.getName());
     private static final String INSERT_REQUEST = "insert into data_model(name, created, text, link) values(?, ?, ?, ?) returning id;";
-    private static final String FIND_BY_ID_REQUEST = "select * from items where id = ?;";
+    private static final String FIND_BY_ID_REQUEST = "select * from data_model where id = ?;";
     private static final String GET_ALL = "select * from data_model;";
 
     private ConfigManager configManager;
 
     private Connection connection;
+
+    public PsqlStore(Connection connection) {
+        this.connection = connection;
+    }
 
     public PsqlStore(ConfigManager configManager) throws IOException {
         this.configManager = configManager;
@@ -57,9 +61,12 @@ public class PsqlStore implements Store, AutoCloseable {
                 ps.setTimestamp(2, post.getDate());
                 ps.setString(3, post.getDescription());
                 ps.setString(4, post.getUrl());
-                ps.execute();
-                LOG.debug("Query executed");
-                LOG.debug("Retrieve key");
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        LOG.debug("Key retrieved");
+                        post.setId(String.valueOf(rs.getInt(1)));
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

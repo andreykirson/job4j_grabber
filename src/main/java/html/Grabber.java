@@ -4,7 +4,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
 import static org.quartz.JobBuilder.newJob;
@@ -16,8 +15,6 @@ public class Grabber implements Grab {
     private static final String RESOURCE = "https://www.sql.ru/forum/job-offers";
 
     private ConfigManager cfg;
-
-    private Connection connection;
 
 
     public Scheduler scheduler() throws SchedulerException {
