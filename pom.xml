@@ -18,7 +18,7 @@
         <profile>
             <id>test</id>
             <properties>
-                <db.url>jdbc:postgresql://127.0.0.1:5432/jod4j_grabber</db.url>
+                <db.url>jdbc:postgresql://127.0.0.1:5432/grabber</db.url>
                 <db.username>postgres</db.username>
                 <db.password>password</db.password>
                 <db.driver>org.postgresql.Driver</db.driver>
@@ -27,7 +27,7 @@
         <profile>
             <id>production</id>
             <properties>
-                <db.url>jdbc:postgresql://127.0.0.1:5432/jod4j_grabber</db.url>
+                <db.url>jdbc:postgresql://127.0.0.1:5432/grabber</db.url>
                 <db.username>postgres</db.username>
                 <db.password>password</db.password>
                 <db.driver>org.postgresql.Driver</db.driver>
@@ -121,11 +121,12 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>3.6.2</version>
                 <configuration>
+                    <propertyFile>src/main/resources/grabber.properties</propertyFile>
                     <changeLogFile>${basedir}/src/main/java/db/master.xml</changeLogFile>
-                    <url>${db.url}</url>
-                    <driver>${db.driver}</driver>
-                    <username>${db.username}</username>
-                    <password>${db.password}</password>
+                    <url>${url}</url>
+                    <driver>${driver}</driver>
+                    <username>${username}</username>
+                    <password>${password}</password>
                 </configuration>
                 <executions>
                     <execution>
@@ -136,10 +137,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
-
     </build>
-
-
 </project>
