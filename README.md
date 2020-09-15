@@ -18,7 +18,6 @@ This project represents basic HTML grabber.
 - Quartz library for scheduling.
 - Slf4j for logging.
 - PostgreSQL for database.
-- Accessing the interface via REST API.
 - Travis to build the project.
 
 
