@@ -72,9 +72,6 @@ public class SqlRuParse implements Parse {
                     Timestamp createDate = parseDate(date.text());
                     LOG.debug("Parse vacansy: {}", vacancy);
                     if (until.test(createDate)) {
-                        System.out.println("Вакансия с такой датой уже есть!!!!!");
-                        System.out.println("LocalDateTime.MAX " + Timestamp.valueOf(LocalDateTime.MAX));
-                        System.out.println("createDate " + createDate);
                         break;
                     }
                     LOG.debug("Parse vacansy: {}", vacancy);
