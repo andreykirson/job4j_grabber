@@ -54,7 +54,8 @@ public class Post {
                     '\''
                     +
                     ", description='"
-                    + description
+                    +
+                    description
                     +
                     '\''
                     +

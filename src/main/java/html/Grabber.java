@@ -4,15 +4,15 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 public class Grabber implements Grab {
-
-    private static final String RESOURCE = "https://www.sql.ru/forum/job-offers";
 
     private ConfigManager cfg;
 
@@ -57,17 +57,20 @@ public class Grabber implements Grab {
             JobDataMap map = context.getJobDetail().getJobDataMap();
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
+            Timestamp lastDate = store.lastItem();
+            Predicate<Timestamp> until = (date) -> date.before(lastDate);
             try {
-                List<Post> listPost = parse.list(RESOURCE);
-                Iterator<Post> it = listPost.iterator();
-                while (it.hasNext()) {
-                    store.save(it.next());
+                for (String resource : parse.resources()) {
+                    List<Post> listPost = parse.list(resource, until);
+                    Iterator<Post> it = listPost.iterator();
+                    while (it.hasNext()) {
+                        store.save(it.next());
+                    }
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 

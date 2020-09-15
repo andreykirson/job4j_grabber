@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +122,26 @@ public class PsqlStore implements Store, AutoCloseable {
             return result;
         }
 
-        @Override
+    @Override
+    public Timestamp lastItem() {
+        LOG.debug("Retrieve last date");
+        Timestamp time = Timestamp.valueOf(LocalDateTime.MAX);
+        try (Statement st = connection.createStatement()) {
+            try (ResultSet resultSet = st.executeQuery("select max(created) from data_model;")) {
+                if (resultSet.next()) {
+                    Timestamp dbTime = resultSet.getTimestamp(1);
+                    if (dbTime != null) {
+                        time = dbTime;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LOG.debug("Retrieved date: {}", time);
+        return time;
+    }
+    @Override
         public void close() throws Exception {
             if (connection != null) {
                 connection.close();

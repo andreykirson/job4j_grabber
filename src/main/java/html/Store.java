@@ -1,8 +1,8 @@
 package html;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.function.Predicate;
 
 public interface Store {
 
@@ -11,4 +11,6 @@ public interface Store {
     List<Post> getAll();
 
     Post findById(String id);
+
+    Timestamp lastItem();
 }

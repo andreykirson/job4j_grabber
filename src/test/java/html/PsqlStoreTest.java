@@ -1,14 +1,12 @@
 package html;
 
 import org.junit.Test;
-
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Properties;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
