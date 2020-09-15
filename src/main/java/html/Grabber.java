@@ -58,7 +58,7 @@ public class Grabber implements Grab {
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
             Timestamp lastDate = store.lastItem();
-            Predicate<Timestamp> until = (date) -> date.before(lastDate);
+            Predicate<Timestamp> until = (date) -> date.before(lastDate) || date.equals(lastDate);
             try {
                 for (String resource : parse.resources()) {
                     List<Post> listPost = parse.list(resource, until);
