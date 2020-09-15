@@ -134,7 +134,7 @@
                 <version>3.6.2</version>
                 <configuration>
                     <propertyFile>src/main/resources/grabber.properties</propertyFile>
-                    <changeLogFile>${basedir}/src/main/java/db/master.xml</changeLogFile>
+                    <changeLogFile>${basedir}/src/main/java/db/script/master.xml</changeLogFile>
                     <url>${url}</url>
                     <driver>${driver}</driver>
                     <username>${username}</username>
