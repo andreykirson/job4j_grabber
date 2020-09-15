@@ -16,7 +16,6 @@ public class Grabber implements Grab {
 
     private ConfigManager cfg;
 
-
     public Scheduler scheduler() throws SchedulerException {
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.start();
